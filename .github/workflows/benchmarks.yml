@@ -2,9 +2,9 @@ name: NitroCache Performance Profiling
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, SetupCICD ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, SetupCICD ]
 
 jobs:
   profile:
