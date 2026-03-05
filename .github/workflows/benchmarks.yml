@@ -40,4 +40,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nitrocache-flamegraphs
-          path: profiler-results/
+          path: profiler-results/**
+          if-no-files-found: error
