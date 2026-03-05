@@ -1,0 +1,20 @@
+# Compiled output
+target/
+**/target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Profiler results (so you don't commit giant flamegraphs)
+profiler-results/
+*.html
+*.txt
+
+# Log files
+*.log
