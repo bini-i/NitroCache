@@ -31,10 +31,14 @@ jobs:
 
       - name: Run Benchmarks with Profiler
         run: |
-          mkdir -p profiler-results
+          RESULTS_PATH=$(pwd)/profiler-results
+          mkdir -p $RESULTS_PATH
           java -jar ./nitro-benchmarks/target/benchmarks.jar \
             -f 1 -wi 2 -i 5 \
             -prof "async:libPath=${{ env.PROFILER_LIB }};output=flamegraph;dir=profiler-results"
+          
+          echo "Checking for generated files in $RESULTS_PATH:"
+          ls -R $RESULTS_PATH
 
       - name: Upload Flamegraphs
         uses: actions/upload-artifact@v4
