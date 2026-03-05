@@ -1,0 +1,43 @@
+name: NitroCache Performance Profiling
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install Async Profiler
+        run: |
+          wget https://github.com/async-profiler/async-profiler/releases/download/v3.0/async-profiler-3.0-linux-x64.tar.gz
+          tar -xzf async-profiler-3.0-linux-x64.tar.gz
+          echo "PROFILER_LIB=$(pwd)/async-profiler-3.0-linux-x64/lib/libasyncProfiler.so" >> $GITHUB_ENV
+
+      - name: Build NitroCache
+        run: mvn clean package -DskipTests
+
+      - name: Run Benchmarks with Profiler
+        run: |
+          mkdir -p profiler-results
+          java -jar ./nitro-benchmarks/target/benchmarks.jar \
+            -f 1 -wi 2 -i 5 \
+            -prof "async:libPath=${{ env.PROFILER_LIB }};output=flamegraph;dir=profiler-results"
+
+      - name: Upload Flamegraphs
+        uses: actions/upload-artifact@v4
+        with:
+          name: nitrocache-flamegraphs
+          path: profiler-results/
